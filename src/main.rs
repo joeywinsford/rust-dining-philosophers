@@ -28,7 +28,13 @@ fn main() {
         Philosopher::new("Helen Pringle"),
     ];
 
-    for philosopher in &philosophers {
-        philosopher.eat();
+    let handles: Vec<_> = philosophers.into_iter().map(|p| {
+        thread::spawn(move || {
+            p.eat();
+        })
+    }).collect();
+
+    for h in handles {
+        h.join().unwrap();
     }
 }
